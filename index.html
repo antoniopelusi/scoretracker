@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Score Tracker</title>
+
+        <meta
+            name="description"
+            content="Score Tracker - Keep track of scores during game night. Perfect for board games, card games, and any multiplayer competition. No signup required."
+        />
+        <meta name="author" content="Antonio Pelusi" />
+
+        <link
+            rel="icon"
+            type="image/png"
+            href="/assets/icons/favicon/favicon-96x96.png"
+            sizes="96x96"
+        />
+        <link
+            rel="icon"
+            type="image/svg+xml"
+            href="/assets/icons/favicon/favicon.svg"
+        />
+        <link rel="shortcut icon" href="/assets/icons/favicon/favicon.ico" />
+        <link
+            rel="apple-touch-icon"
+            sizes="180x180"
+            href="/assets/icons/favicon/apple-touch-icon.png"
+        />
+        <link rel="manifest" href="/assets/icons/favicon/site.webmanifest" />
+        <meta name="apple-mobile-web-app-title" content="Score Tracker" />
+
+        <link rel="canonical" href="https://scoretracker.online" />
+        <meta property="og:title" content="Score Tracker" />
+        <meta
+            property="og:description"
+            content="Keep track of scores during game night. Perfect for board games, card games, and any multiplayer competition. No signup required."
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://scoretracker.online" />
+
+        <link rel="stylesheet" href="/assets/css/main.css" />
+        <script src="/assets/js/main.js" defer></script>
+    </head>
+    <body>
+        <main>
+            <nav>
+                <button id="random">
+                    <img src="/assets/icons/hexagon-dice.svg" alt="" />
+                    Random player
+                </button>
+                <button id="add">
+                    <img src="/assets/icons/user-plus.svg" alt="" />
+                    Add player
+                </button>
+                <button id="reset" data-action="reset">
+                    <img src="/assets/icons/restart.svg" alt="" />
+                    Reset match
+                </button>
+            </nav>
+            <section id="list"></section>
+        </main>
+        <footer>
+            © <a href="https://antoniopelusi.com">Antonio Pelusi</a>. All rights
+            reserved.
+        </footer>
+    </body>
+</html>
