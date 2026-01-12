@@ -106,7 +106,6 @@ function add() {
         setTimeout(() => empty.remove(), 200);
     }
     players.push({ name: "", score: 0 });
-    save();
     updateButtons();
     const div = document.createElement("div");
     div.innerHTML = playerHTML(players[players.length - 1], players.length - 1);
@@ -206,7 +205,17 @@ document.addEventListener(
     true,
 );
 
-registerServiceWorker();
+document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "hidden") save();
+});
+
+window.addEventListener("beforeunload", save);
+
+window.addEventListener("pagehide", save);
+
+document.addEventListener("freeze", save, { capture: true });
+
+window.addEventListener("blur", save);
 
 function registerServiceWorker() {
     if ("serviceWorker" in navigator) {
@@ -215,3 +224,5 @@ function registerServiceWorker() {
         });
     }
 }
+
+registerServiceWorker();
