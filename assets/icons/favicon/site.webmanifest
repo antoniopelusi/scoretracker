@@ -1,6 +1,8 @@
 {
   "name": "Score Tracker",
   "short_name": "Score Tracker",
+  "start_url": "/",
+  "scope": "/",
   "icons": [
     {
       "src": "/assets/icons/favicon/web-app-manifest-192x192.png",
