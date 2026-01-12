@@ -73,6 +73,7 @@ function updateNoname(i) {
 function updateButtons() {
     const named = players.filter((p) => p.name.trim()).length;
     $("random").disabled = named < 2;
+    $("ranking").disabled = named < 2;
     $("add").disabled = players.length >= 100;
     $("reset").disabled = players.length < 1;
 }
@@ -158,6 +159,49 @@ function random() {
     randomTimeout = setTimeout(() => el?.classList.remove("highlight"), 2000);
 }
 
+function buildRankingSnapshot() {
+    const ranked = players
+        .filter((p) => p.name.trim())
+        .sort((a, b) => b.score - a.score);
+
+    return ranked
+        .map((p) => {
+            const rank = getSnapshotRank(ranked, p.score);
+
+            const cls =
+                rank === 1
+                    ? "gold"
+                    : rank === 2
+                      ? "silver"
+                      : rank === 3
+                        ? "bronze"
+                        : "";
+
+            return `
+                <div class="ranking-row ${cls}">
+                    <span>${rank}. ${p.name}</span>
+                    <span>${p.score}</span>
+                </div>
+            `;
+        })
+        .join("");
+}
+
+function openRanking() {
+    const overlay = $("ranking-overlay");
+    $("ranking-content").innerHTML = buildRankingSnapshot();
+    overlay.classList.add("show");
+}
+
+function closeRanking() {
+    const overlay = $("ranking-overlay");
+    overlay.classList.remove("show");
+}
+
+function getSnapshotRank(players, score) {
+    return players.filter((p) => p.score > score).length + 1;
+}
+
 document.addEventListener("DOMContentLoaded", render);
 
 document.addEventListener("click", (e) => {
@@ -172,7 +216,9 @@ document.addEventListener("click", (e) => {
     else if (target.id === "reset") reset();
     else if (target.dataset.action?.startsWith("del"))
         del(+target.dataset.action.replace("del", ""));
-    else if (target.dataset.score) {
+    else if (target.id === "ranking") {
+        openRanking();
+    } else if (target.dataset.score) {
         const i = +target.dataset.index;
         players[i].score += target.dataset.score === "+" ? 1 : -1;
         save();
@@ -216,6 +262,21 @@ window.addEventListener("pagehide", save);
 document.addEventListener("freeze", save, { capture: true });
 
 window.addEventListener("blur", save);
+
+$("ranking-close").addEventListener("click", closeRanking);
+document
+    .querySelector(".ranking-backdrop")
+    .addEventListener("click", closeRanking);
+
+document.querySelector(".ranking-backdrop").addEventListener("click", () => {
+    $("ranking-overlay").hidden = true;
+});
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !$("ranking-overlay").hidden) {
+        closeRanking();
+    }
+});
 
 function registerServiceWorker() {
     if ("serviceWorker" in navigator) {

@@ -49,15 +49,15 @@
                 <div class="nav-inner">
                     <button id="random">
                         <img src="/assets/icons/hexagon-dice.svg" alt="" />
-                        Random player
                     </button>
                     <button id="add">
                         <img src="/assets/icons/user-plus.svg" alt="" />
-                        Add player
+                    </button>
+                    <button id="ranking">
+                        <img src="/assets/icons/ranking.svg" alt="" />
                     </button>
                     <button id="reset" data-action="reset">
                         <img src="/assets/icons/restart.svg" alt="" />
-                        Reset match
                     </button>
                 </div>
             </nav>
@@ -67,5 +67,13 @@
             © <a href="https://antoniopelusi.com">Antonio Pelusi</a>. All rights
             reserved.
         </footer>
+        <div id="ranking-overlay" hidden>
+            <div class="ranking-backdrop"></div>
+            <div class="ranking-modal">
+                <h2>Classifica</h2>
+                <div id="ranking-content"></div>
+                <button id="ranking-close">Chiudi</button>
+            </div>
+        </div>
     </body>
 </html>
