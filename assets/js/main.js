@@ -72,10 +72,19 @@ function updateNoname(i) {
 
 function updateButtons() {
     const named = players.filter((p) => p.name.trim()).length;
-    $("random").disabled = named < 2;
-    $("ranking").disabled = named < 2;
-    $("add").disabled = players.length >= 100;
-    $("reset").disabled = players.length < 1;
+
+    const btns = [
+        { el: $("random"), condition: named < 2 },
+        { el: $("ranking"), condition: named < 2 },
+        { el: $("add"), condition: players.length >= 100 },
+        { el: $("reset"), condition: players.length < 1 },
+    ];
+
+    btns.forEach(({ el, condition }) => {
+        if (!el) return;
+        el.disabled = condition;
+        el.classList.toggle("disabled", condition);
+    });
 }
 
 function updateRanks() {

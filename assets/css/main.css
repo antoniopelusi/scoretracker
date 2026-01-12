@@ -117,12 +117,20 @@ nav {
     gap: var(--gap);
 }
 
-nav > button {
+nav button {
     flex: 1;
-    min-width: 0;
-    white-space: nowrap;
+    min-width: 60px;
     font-size: clamp(0.65rem, 2.5vw, 1rem);
     padding: var(--pad) clamp(0.3rem, 2vw, 1.2rem);
+    transition:
+        background 0.2s,
+        opacity 0.25s ease;
+    opacity: 1;
+}
+
+nav button.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }
 
 section {
@@ -151,11 +159,6 @@ button {
     padding: var(--pad) clamp(0.3rem, 2vw, 1.2rem);
     cursor: pointer;
     transition: background 0.2s;
-}
-
-button:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
 }
 
 input:focus {
