@@ -45,6 +45,15 @@
     font-family: "Roboto Local", sans-serif;
 }
 
+::selection {
+    background-color: var(--text);
+    color: var(--bg);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background: var(--bg);
     color: var(--text);
@@ -90,14 +99,19 @@ nav {
     top: 0;
     left: 0;
     right: 0;
+    width: 100%;
+    z-index: 10;
+    padding: clamp(0.4rem, 1.5vw, 1rem) clamp(0.5rem, 2vw, 2rem);
+    background: var(--bg);
+}
+
+.nav-inner {
+    max-width: 600px;
+    margin: 0 auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: var(--gap);
-    max-width: min(100%, 600px);
-    margin: 0 auto;
-    z-index: 10;
-    padding: clamp(0.4rem, 1.5vw, 1rem) clamp(0.5rem, 2vw, 2rem);
 }
 
 nav > button {
