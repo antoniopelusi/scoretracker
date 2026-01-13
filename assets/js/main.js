@@ -10,15 +10,15 @@ const save = () =>
         JSON.stringify(players.filter((p) => p.name.trim())),
     );
 
-function clearPending() {
+const clearPending = () => {
     clearTimeout(timeout);
     document
         .querySelectorAll(".pending")
         .forEach((el) => el.classList.remove("pending"));
     pending = null;
-}
+};
 
-function danger(id, action) {
+const danger = (id, action) => {
     if (pending === id) {
         clearPending();
         action();
@@ -30,84 +30,92 @@ function danger(id, action) {
         pending = id;
         timeout = setTimeout(clearPending, 1000);
     }
-}
+};
 
-function getRank(i) {
-    const score = players[i].score;
-    return players.filter((p) => p.score > score).length + 1;
-}
+const getRank = (i) =>
+    players.filter((p) => p.score > players[i].score).length + 1;
 
-function getRankClass(rank) {
-    return rank === 1
-        ? "gold"
-        : rank === 2
-          ? "silver"
-          : rank === 3
-            ? "bronze"
-            : "";
-}
+const getRankClass = (rank) =>
+    rank === 1 ? "gold" : rank === 2 ? "silver" : rank === 3 ? "bronze" : "";
 
-function playerHTML(p, i) {
+const playerHTML = (p, i) => {
     const rank = getRank(i);
     const noname = p.name.trim() ? "" : " noname";
-    return `
-        <article id="p${i}" class="${noname}">
-            <output class="${getRankClass(rank)}">${rank}</output>
-            <input type="text" value="${p.name}" placeholder="Name" enterkeyhint="done" data-index="${i}">
-            <span>
-                <button data-score="-" data-index="${i}"><img src="/assets/icons/minus.svg"></button>
-                <input type="number" value="${p.score}" data-index="${i}" enterkeyhint="done">
-                <button data-score="+" data-index="${i}"><img src="/assets/icons/plus.svg"></button>
-            </span>
-            <button data-action="del${i}"><img src="/assets/icons/user-xmark.svg"></button>
-        </article>
-    `;
-}
+    return `<article id="p${i}" class="${noname}">
+        <output class="${getRankClass(rank)}">${rank}</output>
+        <input type="text" value="${p.name}" placeholder="Name" enterkeyhint="done" data-index="${i}">
+        <span>
+            <button data-score="-" data-index="${i}"><img src="/assets/icons/minus.svg"></button>
+            <input type="number" value="${p.score}" data-index="${i}" enterkeyhint="done">
+            <button data-score="+" data-index="${i}"><img src="/assets/icons/plus.svg"></button>
+        </span>
+        <button data-action="del${i}"><img src="/assets/icons/user-xmark.svg"></button>
+    </article>`;
+};
 
-function updateNoname(i) {
-    const el = $("p" + i);
-    el.classList.toggle("noname", !players[i].name.trim());
+const updateNoname = (i) => {
+    $("p" + i).classList.toggle("noname", !players[i].name.trim());
     updateButtons();
-}
+};
 
-function updateButtons() {
+const updateButtons = () => {
     const named = players.filter((p) => p.name.trim()).length;
-
     const btns = [
         { el: $("random"), condition: named < 2 },
         { el: $("ranking"), condition: named < 2 },
         { el: $("add"), condition: players.length >= 100 },
         { el: $("reset"), condition: players.length < 1 },
     ];
-
     btns.forEach(({ el, condition }) => {
         if (!el) return;
         el.disabled = condition;
         el.classList.toggle("disabled", condition);
     });
-}
+};
 
-function updateRanks() {
+const updateRanks = () => {
     document.querySelectorAll("#list output").forEach((el, j) => {
         const rank = getRank(j);
         el.textContent = rank;
         el.className = getRankClass(rank);
     });
-}
+};
 
-function updateScore(i) {
+const updateScore = (i) => {
     $("p" + i).querySelector('input[type="number"]').value = players[i].score;
     updateRanks();
-}
+};
 
-function render() {
+const render = () => {
     updateButtons();
     $("list").innerHTML = players.length
         ? players.map((p, i) => playerHTML(p, i)).join("")
-        : `<aside class="fadeIn"><p>Score Tracker</p><span>Double click to reset the match or delete a player.</span><span>Add players to start!</span></aside>`;
-}
+        : `<aside class="fadeIn">
+            <p>Score Tracker</p>
+            <div class="info-item">
+                <img src="/assets/icons/hexagon-dice.svg" alt="" />
+                <span>Pick a random player</span>
+            </div>
+            <div class="info-item">
+                <img src="/assets/icons/user-plus.svg" alt="" />
+                <span>Add a new player</span>
+            </div>
+            <div class="info-item">
+                <img src="/assets/icons/user-xmark.svg" alt="" />
+                <span>Remove player (double click)</span>
+            </div>
+            <div class="info-item">
+                <img src="/assets/icons/restart.svg" alt="" />
+                <span>Reset all (double click)</span>
+            </div>
+            <div class="info-item">
+                <img src="/assets/icons/ranking.svg" alt="" />
+                <span>Show current rankings</span>
+            </div>
+        </aside>`;
+};
 
-function add() {
+const add = () => {
     if (players.length >= 100) return;
     clearPending();
     const empty = $("list").querySelector("aside");
@@ -123,9 +131,9 @@ function add() {
     newEl.classList.add("fadeIn");
     $("list").appendChild(newEl);
     newEl.querySelector('input[type="text"]').focus();
-}
+};
 
-function del(i) {
+const del = (i) =>
     danger("del" + i, () => {
         const el = $("p" + i);
         el.classList.add("fadeOut");
@@ -135,9 +143,8 @@ function del(i) {
             render();
         }, 200);
     });
-}
 
-function reset() {
+const reset = () => {
     if (!players.length) return;
     danger("reset", () => {
         document
@@ -149,9 +156,9 @@ function reset() {
             render();
         }, 200);
     });
-}
+};
 
-function random() {
+const random = () => {
     const named = players
         .map((p, i) => ({ p, i }))
         .filter(({ p }) => p.name.trim());
@@ -166,50 +173,30 @@ function random() {
     el.classList.add("highlight");
     el.scrollIntoView({ behavior: "smooth", block: "center" });
     randomTimeout = setTimeout(() => el?.classList.remove("highlight"), 2000);
-}
+};
 
-function buildRankingSnapshot() {
+const buildRankingSnapshot = () => {
     const ranked = players
         .filter((p) => p.name.trim())
         .sort((a, b) => b.score - a.score);
-
     return ranked
         .map((p) => {
-            const rank = getSnapshotRank(ranked, p.score);
-
-            const cls =
-                rank === 1
-                    ? "gold"
-                    : rank === 2
-                      ? "silver"
-                      : rank === 3
-                        ? "bronze"
-                        : "";
-
-            return `
-                <div class="ranking-row ${cls}">
-                    <span>${rank}. ${p.name}</span>
-                    <span>${p.score}</span>
-                </div>
-            `;
+            const rank = ranked.filter((x) => x.score > p.score).length + 1;
+            const cls = getRankClass(rank);
+            return `<div class="ranking-row ${cls}">
+            <span>${rank}. ${p.name}</span>
+            <span>${p.score} pt.</span>
+        </div>`;
         })
         .join("");
-}
+};
 
-function openRanking() {
-    const overlay = $("ranking-overlay");
+const openRanking = () => {
     $("ranking-content").innerHTML = buildRankingSnapshot();
-    overlay.classList.add("show");
-}
+    $("ranking-overlay").classList.add("show");
+};
 
-function closeRanking() {
-    const overlay = $("ranking-overlay");
-    overlay.classList.remove("show");
-}
-
-function getSnapshotRank(players, score) {
-    return players.filter((p) => p.score > score).length + 1;
-}
+const closeRanking = () => $("ranking-overlay").classList.remove("show");
 
 document.addEventListener("DOMContentLoaded", render);
 
@@ -219,15 +206,13 @@ document.addEventListener("click", (e) => {
         if (!e.target.closest("[data-action]")) clearPending();
         return;
     }
-
     if (target.id === "random") random();
     else if (target.id === "add") add();
     else if (target.id === "reset") reset();
     else if (target.dataset.action?.startsWith("del"))
         del(+target.dataset.action.replace("del", ""));
-    else if (target.id === "ranking") {
-        openRanking();
-    } else if (target.dataset.score) {
+    else if (target.id === "ranking") openRanking();
+    else if (target.dataset.score) {
         const i = +target.dataset.index;
         players[i].score += target.dataset.score === "+" ? 1 : -1;
         save();
@@ -250,6 +235,7 @@ document.addEventListener("input", (e) => {
 
 document.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && e.target.tagName === "INPUT") e.target.blur();
+    if (e.key === "Escape" && !$("ranking-overlay").hidden) closeRanking();
 });
 
 document.addEventListener(
@@ -260,39 +246,22 @@ document.addEventListener(
     true,
 );
 
-document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") save();
-});
-
-window.addEventListener("beforeunload", save);
-
-window.addEventListener("pagehide", save);
+["visibilitychange", "beforeunload", "pagehide", "blur"].forEach((event) =>
+    (event === "beforeunload" || event === "blur"
+        ? window
+        : document
+    ).addEventListener(event, save),
+);
 
 document.addEventListener("freeze", save, { capture: true });
-
-window.addEventListener("blur", save);
 
 $("ranking-close").addEventListener("click", closeRanking);
 document
     .querySelector(".ranking-backdrop")
     .addEventListener("click", closeRanking);
 
-document.querySelector(".ranking-backdrop").addEventListener("click", () => {
-    $("ranking-overlay").hidden = true;
-});
-
-document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !$("ranking-overlay").hidden) {
-        closeRanking();
-    }
-});
-
-function registerServiceWorker() {
-    if ("serviceWorker" in navigator) {
-        window.addEventListener("load", () => {
-            navigator.serviceWorker.register("/service-worker.js");
-        });
-    }
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () =>
+        navigator.serviceWorker.register("/service-worker.js"),
+    );
 }
-
-registerServiceWorker();
