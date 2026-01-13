@@ -235,7 +235,8 @@ document.addEventListener("input", (e) => {
 
 document.addEventListener("keydown", (e) => {
     if (e.key === "Enter" && e.target.tagName === "INPUT") e.target.blur();
-    if (e.key === "Escape" && !$("ranking-overlay").hidden) closeRanking();
+    if (e.key === "Escape" && $("ranking-overlay").classList.contains("show"))
+        closeRanking();
 });
 
 document.addEventListener(

@@ -63,10 +63,10 @@
 
 html {
     scroll-behavior: smooth;
+    background: var(--bg);
 }
 
 body {
-    background: var(--bg);
     color: var(--text);
     min-height: 100dvh;
     display: flex;
@@ -75,6 +75,8 @@ body {
     padding: var(--s-md);
     gap: var(--s-lg);
     overscroll-behavior: contain;
+    animation: fadeIn 0.6s ease forwards;
+    opacity: 1;
 }
 
 main {
@@ -282,7 +284,7 @@ aside {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    opacity: 0.5;
+    opacity: 0.7;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -303,7 +305,7 @@ aside > .info-item {
     align-items: center;
     gap: var(--s-sm);
     width: 100%;
-    padding: var(--s-md) var(--s-xl);
+    padding: var(--s-md);
     margin-bottom: var(--s-xs);
     background: var(--container);
     border-radius: var(--radius);
@@ -313,23 +315,23 @@ aside > .info-item {
 }
 
 aside > .info-item:nth-child(2) {
-    animation-delay: 0.1s;
-}
-
-aside > .info-item:nth-child(3) {
     animation-delay: 0.2s;
 }
 
-aside > .info-item:nth-child(4) {
+aside > .info-item:nth-child(3) {
     animation-delay: 0.3s;
 }
 
-aside > .info-item:nth-child(5) {
+aside > .info-item:nth-child(4) {
     animation-delay: 0.4s;
 }
 
-aside > .info-item:nth-child(6) {
+aside > .info-item:nth-child(5) {
     animation-delay: 0.5s;
+}
+
+aside > .info-item:nth-child(6) {
+    animation-delay: 0.6s;
 }
 
 aside > .info-item img {
