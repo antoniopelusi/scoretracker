@@ -93,10 +93,6 @@ const render = () => {
         : `<aside class="fadeIn">
             <p>Score Tracker</p>
             <div class="info-item">
-                <img src="/assets/icons/hexagon-dice.svg" alt="" />
-                <span>Pick a random player</span>
-            </div>
-            <div class="info-item">
                 <img src="/assets/icons/user-plus.svg" alt="" />
                 <span>Add a new player</span>
             </div>
@@ -111,6 +107,10 @@ const render = () => {
             <div class="info-item">
                 <img src="/assets/icons/ranking.svg" alt="" />
                 <span>Show current rankings</span>
+            </div>
+            <div class="info-item">
+                <img src="/assets/icons/hexagon-dice.svg" alt="" />
+                <span>Pick a random player</span>
             </div>
         </aside>`;
 };
