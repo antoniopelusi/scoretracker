@@ -45,11 +45,11 @@ const playerHTML = (p, i) => {
         <output class="${getRankClass(rank)}">${rank}</output>
         <input type="text" value="${p.name}" placeholder="Name" enterkeyhint="done" data-index="${i}">
         <span>
-            <button data-score="-" data-index="${i}"><img src="/assets/icons/minus.svg"></button>
+            <button aria-label="Decrement score by one" data-score="-" data-index="${i}"><img src="/assets/icons/minus.svg"></button>
             <input type="number" value="${p.score}" data-index="${i}" enterkeyhint="done">
-            <button data-score="+" data-index="${i}"><img src="/assets/icons/plus.svg"></button>
+            <button aria-label="Increment score by one" data-score="+" data-index="${i}"><img src="/assets/icons/plus.svg"></button>
         </span>
-        <button data-action="del${i}"><img src="/assets/icons/user-xmark.svg"></button>
+        <button aria-label="Remove player (double click)" data-action="del${i}"><img src="/assets/icons/user-xmark.svg"></button>
     </article>`;
 };
 

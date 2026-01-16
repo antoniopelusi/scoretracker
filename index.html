@@ -38,22 +38,28 @@
         <meta property="og:url" content="https://scoretracker.online" />
 
         <link rel="stylesheet" href="/assets/css/main.css" />
+        <link rel="stylesheet" href="/assets/css/fonts.css" />
+
         <script src="/assets/js/main.js" defer></script>
     </head>
     <body>
         <main>
             <nav>
                 <div class="nav-inner">
-                    <button id="random">
+                    <button id="random" aria-label="Pick a random player">
                         <img src="/assets/icons/hexagon-dice.svg" alt="" />
                     </button>
-                    <button id="add">
+                    <button id="add" aria-label="Add a new player">
                         <img src="/assets/icons/user-plus.svg" alt="" />
                     </button>
-                    <button id="reset" data-action="reset">
+                    <button
+                        id="reset"
+                        aria-label="Reset all (double click)"
+                        data-action="reset"
+                    >
                         <img src="/assets/icons/restart.svg" alt="" />
                     </button>
-                    <button id="ranking">
+                    <button id="ranking" aria-label="Show current rankings">
                         <img src="/assets/icons/ranking.svg" alt="" />
                     </button>
                 </div>
