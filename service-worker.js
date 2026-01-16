@@ -1,4 +1,4 @@
-const CACHE_NAME = "scoretracker-v2";
+const CACHE_NAME = "scoretracker";
 const urlsToCache = [
     "/",
     "/index.html",
