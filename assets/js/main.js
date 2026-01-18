@@ -3,6 +3,7 @@ let players = JSON.parse(localStorage.getItem("players") || "[]");
 let pending = null;
 let timeout = null;
 let randomTimeout = null;
+let calcPlayerIndex = null;
 
 const save = () =>
     localStorage.setItem(
@@ -46,14 +47,16 @@ const playerHTML = (p, i) => {
         <input type="text" value="${p.name}" placeholder="Name" enterkeyhint="done" data-index="${i}">
         <span>
             <button aria-label="Decrement score by one" data-score="-" data-index="${i}"><img src="/assets/icons/minus.svg"></button>
-            <input type="number" value="${p.score}" data-index="${i}" enterkeyhint="done">
+            <input type="text" inputmode="numeric" value="${p.score}" data-index="${i}" enterkeyhint="done" data-score-input>
             <button aria-label="Increment score by one" data-score="+" data-index="${i}"><img src="/assets/icons/plus.svg"></button>
         </span>
+        <button aria-label="Calculate score" data-calc="${i}"><img src="/assets/icons/math-book.svg"></button>
         <button aria-label="Remove player (double click)" data-action="del${i}"><img src="/assets/icons/user-xmark.svg"></button>
     </article>`;
 };
 
 const updateNoname = (i) => {
+    if (!players[i]) return;
     $("p" + i).classList.toggle("noname", !players[i].name.trim());
     updateButtons();
 };
@@ -82,7 +85,10 @@ const updateRanks = () => {
 };
 
 const updateScore = (i) => {
-    $("p" + i).querySelector('input[type="number"]').value = players[i].score;
+    if (!players[i]) return;
+    const el = $("p" + i);
+    if (!el) return;
+    el.querySelector("[data-score-input]").value = players[i].score;
     updateRanks();
 };
 
@@ -97,6 +103,10 @@ const render = () => {
                 <span>Add a new player</span>
             </div>
             <div class="info-item">
+                <img src="/assets/icons/math-book.svg" alt="" />
+                <span>Update score</span>
+            </div>
+            <div class="info-item">
                 <img src="/assets/icons/user-xmark.svg" alt="" />
                 <span>Remove player (double click)</span>
             </div>
@@ -105,7 +115,7 @@ const render = () => {
                 <span>Reset all (double click)</span>
             </div>
             <div class="info-item">
-                <img src="/assets/icons/ranking.svg" alt="" />
+                <img src="/assets/icons/leaderboard.svg" alt="" />
                 <span>Show current rankings</span>
             </div>
             <div class="info-item">
@@ -130,7 +140,7 @@ const add = () => {
     const newEl = div.firstElementChild;
     newEl.classList.add("fadeIn");
     $("list").appendChild(newEl);
-    newEl.querySelector('input[type="text"]').focus();
+    newEl.querySelector('input[type="text"]:not([data-score-input])').focus();
 };
 
 const del = (i) =>
@@ -198,6 +208,76 @@ const openRanking = () => {
 
 const closeRanking = () => $("ranking-overlay").classList.remove("show");
 
+const safeEval = (expr) => {
+    const sanitized = expr.replace(/\s+/g, "").replace(/[^0-9+\-*/().]/g, "");
+    if (!sanitized) return null;
+
+    const trimmed = sanitized.trim();
+    if (/^[+\-*/]/.test(trimmed) && !/^[+\-]/.test(trimmed)) return null;
+
+    let toEval = trimmed;
+    if (/^\d/.test(toEval)) toEval = "+" + toEval;
+
+    try {
+        const result = Function('"use strict"; return (' + toEval + ")")();
+        return typeof result === "number" && isFinite(result) ? result : null;
+    } catch {
+        return null;
+    }
+};
+
+const openCalc = (i) => {
+    calcPlayerIndex = i;
+    $("calc-input").value = "";
+    $("calc-player-info").innerHTML =
+        `<b>Player:</b> ${players[i].name}<br /><b>Score:</b> ${players[i].score} pt.`;
+    $("calc-overlay").classList.add("show");
+    setTimeout(() => $("calc-input").focus(), 100);
+};
+
+const closeCalc = () => {
+    $("calc-overlay").classList.remove("show");
+    calcPlayerIndex = null;
+};
+
+const confirmCalc = () => {
+    if (calcPlayerIndex === null) return;
+
+    const expr = $("calc-input").value.trim();
+    const sanitized = expr.replace(/\s+/g, "");
+
+    let result;
+    const currentScore = players[calcPlayerIndex].score;
+
+    if (/^[*/]/.test(sanitized)) {
+        try {
+            result = Function(
+                '"use strict"; return (' + currentScore + sanitized + ")",
+            )();
+        } catch {
+            result = null;
+        }
+    } else {
+        result = safeEval(expr);
+        if (result !== null) {
+            result = currentScore + result;
+        }
+    }
+
+    if (result === null || !isFinite(result)) {
+        $("calc-input").style.borderColor = "var(--danger)";
+        setTimeout(() => {
+            $("calc-input").style.borderColor = "";
+        }, 500);
+        return;
+    }
+
+    players[calcPlayerIndex].score = Math.round(result);
+    save();
+    updateScore(calcPlayerIndex);
+    closeCalc();
+};
+
 document.addEventListener("DOMContentLoaded", render);
 
 document.addEventListener("click", (e) => {
@@ -212,6 +292,7 @@ document.addEventListener("click", (e) => {
     else if (target.dataset.action?.startsWith("del"))
         del(+target.dataset.action.replace("del", ""));
     else if (target.id === "ranking") openRanking();
+    else if (target.dataset.calc !== undefined) openCalc(+target.dataset.calc);
     else if (target.dataset.score) {
         const i = +target.dataset.index;
         players[i].score += target.dataset.score === "+" ? 1 : -1;
@@ -220,29 +301,170 @@ document.addEventListener("click", (e) => {
     }
 });
 
+document.addEventListener("beforeinput", (e) => {
+    if (
+        e.target &&
+        e.target.hasAttribute &&
+        e.target.hasAttribute("data-score-input") &&
+        e.target.dataset.index !== undefined
+    ) {
+        const data = e.data;
+        if (!data) return;
+
+        if (!/^[0-9\-]$/.test(data)) {
+            e.preventDefault();
+            return;
+        }
+
+        if (data === "-") {
+            const currentValue = e.target.value;
+            const cursorPos = e.target.selectionStart;
+
+            if (currentValue.includes("-") || cursorPos !== 0) {
+                e.preventDefault();
+            }
+        }
+    }
+
+    if (e.target.id === "calc-input") {
+        const data = e.data;
+        if (!data) return;
+
+        if (!/^[0-9+\-*/().\s]$/.test(data)) {
+            e.preventDefault();
+        }
+    }
+});
+
 document.addEventListener("input", (e) => {
     const i = +e.target.dataset.index;
-    if (e.target.type === "text") {
+    if (!players[i]) return;
+    if (
+        e.target.type === "text" &&
+        e.target.hasAttribute &&
+        !e.target.hasAttribute("data-score-input")
+    ) {
         players[i].name = e.target.value;
         save();
         updateNoname(i);
-    } else if (e.target.type === "number") {
-        players[i].score = +e.target.value;
+    } else if (
+        e.target.hasAttribute &&
+        e.target.hasAttribute("data-score-input")
+    ) {
+        let value = e.target.value.trim();
+
+        if (value === "" || value === "-") {
+            return;
+        }
+
+        if (value.indexOf("-") > 0) {
+            value = value.replace(/-/g, "");
+        }
+
+        const numValue = parseInt(value, 10);
+        if (isNaN(numValue)) {
+            e.target.value = players[i].score;
+            return;
+        }
+
+        players[i].score = numValue;
+        e.target.value = numValue;
         save();
         updateRanks();
     }
 });
 
+document.addEventListener(
+    "blur",
+    (e) => {
+        if (
+            e.target.hasAttribute &&
+            e.target.hasAttribute("data-score-input") &&
+            e.target.dataset.index !== undefined
+        ) {
+            const i = +e.target.dataset.index;
+            if (!players[i]) return;
+            let value = e.target.value.trim();
+
+            if (value === "" || value === "-") {
+                players[i].score = 0;
+                e.target.value = 0;
+                save();
+                updateRanks();
+                return;
+            }
+
+            if (value.indexOf("-") > 0) {
+                value = value.replace(/-/g, "");
+            }
+
+            const numValue = parseInt(value, 10);
+            if (!isNaN(numValue)) {
+                players[i].score = numValue;
+                e.target.value = numValue;
+                save();
+                updateRanks();
+            } else {
+                players[i].score = 0;
+                e.target.value = 0;
+                save();
+                updateRanks();
+            }
+        }
+    },
+    true,
+);
+
 document.addEventListener("keydown", (e) => {
-    if (e.key === "Enter" && e.target.tagName === "INPUT") e.target.blur();
-    if (e.key === "Escape" && $("ranking-overlay").classList.contains("show"))
-        closeRanking();
+    if (e.key === "Enter" && e.target.tagName === "INPUT") {
+        if (e.target.id === "calc-input") {
+            confirmCalc();
+        } else if (
+            e.target.hasAttribute &&
+            e.target.hasAttribute("data-score-input") &&
+            e.target.dataset.index !== undefined
+        ) {
+            const i = +e.target.dataset.index;
+            if (players[i]) {
+                let value = e.target.value.trim();
+
+                if (value === "" || value === "-") {
+                    players[i].score = 0;
+                    e.target.value = 0;
+                } else {
+                    if (value.indexOf("-") > 0) {
+                        value = value.replace(/-/g, "");
+                    }
+
+                    const numValue = parseInt(value, 10);
+                    if (!isNaN(numValue)) {
+                        players[i].score = numValue;
+                        e.target.value = numValue;
+                    } else {
+                        players[i].score = 0;
+                        e.target.value = 0;
+                    }
+                }
+                save();
+                updateRanks();
+            }
+            e.target.blur();
+        } else {
+            e.target.blur();
+        }
+    }
+    if (e.key === "Escape") {
+        if ($("calc-overlay").classList.contains("show")) closeCalc();
+        else if ($("ranking-overlay").classList.contains("show"))
+            closeRanking();
+    }
 });
 
 document.addEventListener(
     "focus",
     (e) => {
-        if (e.target.type === "number") e.target.select();
+        if (e.target.hasAttribute && e.target.hasAttribute("data-score-input"))
+            e.target.select();
     },
     true,
 );
@@ -260,6 +482,10 @@ $("ranking-close").addEventListener("click", closeRanking);
 document
     .querySelector(".ranking-backdrop")
     .addEventListener("click", closeRanking);
+
+$("calc-confirm").addEventListener("click", confirmCalc);
+$("calc-cancel").addEventListener("click", closeCalc);
+document.querySelector(".calc-backdrop").addEventListener("click", closeCalc);
 
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () =>

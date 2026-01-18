@@ -142,8 +142,9 @@ input[type="text"] {
     min-width: clamp(50px, 20vw, 120px);
 }
 
-input[type="number"] {
-    width: clamp(35px, 12vw, 70px);
+input[type="number"],
+input[inputmode="numeric"] {
+    width: clamp(40px, 15vw, 80px);
     text-align: center;
     appearance: textfield;
     border-radius: 0;
@@ -188,11 +189,16 @@ article > span {
     order: 2;
 }
 
-article > button {
+article > button[data-calc] {
     order: 3;
 }
 
-article > span {
+article > button {
+    order: 4;
+}
+
+article > span,
+article > button[data-calc] {
     display: flex;
     align-items: stretch;
     transition:
@@ -288,26 +294,30 @@ aside > .info-item {
 }
 
 aside > .info-item:nth-child(2) {
-    animation-delay: 0.2s;
+    animation-delay: 0.1s;
 }
 
 aside > .info-item:nth-child(3) {
-    animation-delay: 0.3s;
+    animation-delay: 0.2s;
 }
 
 aside > .info-item:nth-child(4) {
-    animation-delay: 0.4s;
+    animation-delay: 0.3s;
 }
 
 aside > .info-item:nth-child(5) {
-    animation-delay: 0.5s;
+    animation-delay: 0.4s;
 }
 
 aside > .info-item:nth-child(6) {
+    animation-delay: 0.5s;
+}
+
+aside > .info-item:nth-child(7) {
     animation-delay: 0.6s;
 }
 
-aside > .info-item:not(:nth-child(6))::after {
+aside > .info-item:not(:nth-child(7))::after {
     content: "";
     position: absolute;
     left: 0;
@@ -407,6 +417,7 @@ aside.fadeOut {
 }
 
 .noname > span,
+.noname > button[data-calc],
 .noname > output {
     visibility: hidden;
     opacity: 0;
@@ -466,6 +477,7 @@ aside.fadeOut {
 
 .ranking-modal h2 {
     text-align: center;
+    padding-bottom: var(--s-sm);
 }
 
 .ranking-row {
@@ -477,7 +489,7 @@ aside.fadeOut {
     font-weight: 400;
     margin-bottom: var(--s-md);
     position: relative;
-    padding-left: calc(var(--s-sm) + 6px);
+    padding-left: var(--s-lg);
 }
 
 .ranking-row span {
@@ -491,10 +503,10 @@ aside.fadeOut {
     position: absolute;
     left: 0;
     top: 0;
-    width: 4px;
+    width: 5px;
     height: 100%;
-    border-radius: 2px;
-    background: transparent;
+    border-radius: var(--radius) 0 0 var(--radius);
+    background: var(--object);
 }
 
 .ranking-row.gold::before {
@@ -513,4 +525,77 @@ aside.fadeOut {
 .ranking-row.silver span,
 .ranking-row.bronze span {
     font-weight: 700;
+}
+
+#calc-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+#calc-overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+#calc-overlay.show .calc-backdrop {
+    opacity: 1;
+}
+
+.calc-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    transition: opacity 0.25s;
+    opacity: 0;
+}
+
+.calc-modal {
+    position: relative;
+    z-index: 1;
+    width: min(90%, 400px);
+    background: var(--container);
+    border-radius: clamp(12px, 3vw, 20px);
+    padding: var(--s-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--s-xs);
+    animation: fadeIn 0.2s;
+    font-size: var(--font-md);
+}
+
+.calc-modal h2 {
+    text-align: center;
+    padding-bottom: var(--s-sm);
+}
+
+.calc-modal h2 {
+    text-align: center;
+    padding-bottom: var(--s-sm);
+}
+
+#calc-player-info {
+    text-align: center;
+    font-size: var(--font-base);
+    opacity: 0.8;
+    padding-bottom: var(--s-md);
+}
+
+.calc-modal input {
+    font-size: var(--font-base);
+}
+
+.calc-buttons {
+    display: flex;
+    gap: var(--s-xs);
+}
+
+.calc-buttons button {
+    flex: 1;
 }
