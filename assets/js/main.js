@@ -243,7 +243,10 @@ const closeCalc = () => {
 const confirmCalc = () => {
     if (calcPlayerIndex === null) return;
 
-    const expr = $("calc-input").value.trim();
+    const input = $("calc-input");
+    input.blur();
+
+    const expr = input.value.trim();
     const sanitized = expr.replace(/\s+/g, "");
 
     let result;
@@ -265,9 +268,9 @@ const confirmCalc = () => {
     }
 
     if (result === null || !isFinite(result)) {
-        $("calc-input").style.borderColor = "var(--danger)";
+        input.style.borderColor = "var(--danger)";
         setTimeout(() => {
-            $("calc-input").style.borderColor = "";
+            input.style.borderColor = "";
         }, 500);
         return;
     }
