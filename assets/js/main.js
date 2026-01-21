@@ -229,8 +229,12 @@ const safeEval = (expr) => {
 const openCalc = (i) => {
     calcPlayerIndex = i;
     $("calc-input").value = "";
-    $("calc-player-info").innerHTML =
-        `<b>Player:</b> ${players[i].name}<br /><b>Score:</b> ${players[i].score} pt.`;
+
+    $("calc-player-name").textContent = players[i].name || "Unnamed Player";
+    $("calc-actual-score").textContent = players[i].score + " pt.";
+
+    $("calc-preview").textContent = "—";
+    $("calc-preview").classList.remove("error");
     $("calc-overlay").classList.add("show");
     setTimeout(() => $("calc-input").focus(), 100);
 };
@@ -268,10 +272,7 @@ const confirmCalc = () => {
     }
 
     if (result === null || !isFinite(result)) {
-        input.style.borderColor = "var(--danger)";
-        setTimeout(() => {
-            input.style.borderColor = "";
-        }, 500);
+        $("calc-preview").classList.add("error");
         return;
     }
 
@@ -340,8 +341,51 @@ document.addEventListener("beforeinput", (e) => {
 });
 
 document.addEventListener("input", (e) => {
+    if (e.target.id === "calc-input") {
+        const expr = e.target.value.trim();
+        const preview = $("calc-preview");
+
+        if (!expr) {
+            preview.textContent = "—";
+            preview.classList.remove("error");
+            return;
+        }
+
+        const sanitized = expr.replace(/\s+/g, "");
+        let result;
+        const currentScore = players[calcPlayerIndex].score;
+
+        if (/^[*/]/.test(sanitized)) {
+            try {
+                result = Function(
+                    '"use strict"; return (' + currentScore + sanitized + ")",
+                )();
+            } catch {
+                result = null;
+            }
+        } else {
+            result = safeEval(expr);
+            if (result !== null) {
+                result = currentScore + result;
+            }
+        }
+
+        if (result === null || !isFinite(result)) {
+            preview.textContent = "Invalid expression";
+            preview.classList.add("error");
+        } else {
+            const newScore = Math.round(result);
+            const diff = newScore - currentScore;
+            const sign = diff >= 0 ? "+" : "";
+            preview.textContent = `${newScore} pt. (${sign}${diff})`;
+            preview.classList.remove("error");
+        }
+        return;
+    }
+
     const i = +e.target.dataset.index;
     if (!players[i]) return;
+
     if (
         e.target.type === "text" &&
         e.target.hasAttribute &&

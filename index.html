@@ -82,7 +82,19 @@
             <div class="calc-backdrop"></div>
             <div class="calc-modal">
                 <h2>Update score</h2>
-                <p id="calc-player-info"></p>
+
+                <div class="calc-info-grid">
+                    <span class="calc-info-label">Player</span>
+                    <span class="calc-info-value" id="calc-player-name"></span>
+                    <span class="calc-info-label">Actual Score</span>
+                    <span class="calc-info-value" id="calc-actual-score"></span>
+                </div>
+
+                <div class="calc-preview-container">
+                    <div class="calc-preview-label">New Score</div>
+                    <div id="calc-preview">—</div>
+                </div>
+
                 <input
                     id="calc-input"
                     type="text"

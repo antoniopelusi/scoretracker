@@ -580,11 +580,61 @@ aside.fadeOut {
     padding-bottom: var(--s-sm);
 }
 
-#calc-player-info {
-    text-align: center;
+.calc-info-grid {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: var(--s-sm) var(--s-md);
+    padding: var(--s-md);
+    background: var(--object);
+    border-radius: var(--radius);
+    margin-bottom: var(--s-md);
+    align-items: center;
+    justify-content: center;
+}
+
+.calc-info-label {
+    font-size: var(--font-sm);
+    opacity: 0.6;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: 500;
+    text-align: right;
+}
+
+.calc-info-value {
     font-size: var(--font-base);
-    opacity: 0.8;
-    padding-bottom: var(--s-md);
+    font-weight: 600;
+    text-align: left;
+}
+
+.calc-preview-container {
+    margin-bottom: var(--s-md);
+}
+
+.calc-preview-label {
+    font-size: var(--font-sm);
+    opacity: 0.6;
+    text-transform: uppercase;
+    margin-bottom: var(--s-xs);
+    text-align: center;
+}
+
+#calc-preview {
+    text-align: center;
+    font-size: var(--font-lg);
+    font-weight: 700;
+    padding: var(--s-md);
+    background: var(--object);
+    border-radius: var(--radius);
+    min-height: 2.5em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+#calc-preview.error {
+    color: var(--danger);
 }
 
 .calc-modal input {
