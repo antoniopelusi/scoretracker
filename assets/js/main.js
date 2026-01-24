@@ -115,7 +115,7 @@ const render = () => {
             </div>
             <div class="info-item">
                 <img src="/assets/icons/restart.svg" alt="" />
-                <span>Reset score (double click)</span>
+                <span>Reset all scores (double click)</span>
             </div>
             <div class="info-item">
                 <img src="/assets/icons/trash.svg" alt="" />
