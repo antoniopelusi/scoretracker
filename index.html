@@ -53,11 +53,18 @@
                         <img src="/assets/icons/user-plus.svg" alt="" />
                     </button>
                     <button
-                        id="reset"
-                        aria-label="Reset all (double click)"
-                        data-action="reset"
+                        id="reset-scores"
+                        aria-label="Reset all scores (double click)"
+                        data-action="reset-scores"
                     >
                         <img src="/assets/icons/restart.svg" alt="" />
+                    </button>
+                    <button
+                        id="reset"
+                        aria-label="Delete all players (double click)"
+                        data-action="reset"
+                    >
+                        <img src="/assets/icons/trash.svg" alt="" />
                     </button>
                     <button id="ranking" aria-label="Show current rankings">
                         <img src="/assets/icons/leaderboard.svg" alt="" />
@@ -67,8 +74,13 @@
             <section id="list"></section>
         </main>
         <footer>
-            © <a href="https://antoniopelusi.com">Antonio Pelusi</a>. All rights
-            reserved.
+            <div class="footer-left">
+                © <a href="https://antoniopelusi.com">Antonio Pelusi</a>. All
+                rights reserved.
+            </div>
+            <button id="help" aria-label="Show help">
+                <img src="/assets/icons/question-mark.svg" alt="" />
+            </button>
         </footer>
         <div id="ranking-overlay" hidden>
             <div class="ranking-backdrop"></div>
@@ -106,6 +118,43 @@
                     <button id="calc-confirm">Confirm</button>
                 </div>
                 <br />
+            </div>
+        </div>
+        <div id="help-overlay" hidden>
+            <div class="help-backdrop"></div>
+            <div class="help-modal">
+                <h2>How to use</h2>
+                <div id="help-content">
+                    <div class="info-item">
+                        <img src="/assets/icons/user-plus.svg" alt="" />
+                        <span>Add a new player</span>
+                    </div>
+                    <div class="info-item">
+                        <img src="/assets/icons/math-book.svg" alt="" />
+                        <span>Update score</span>
+                    </div>
+                    <div class="info-item">
+                        <img src="/assets/icons/user-xmark.svg" alt="" />
+                        <span>Remove player (double click)</span>
+                    </div>
+                    <div class="info-item">
+                        <img src="/assets/icons/restart.svg" alt="" />
+                        <span>Reset all scores (double click)</span>
+                    </div>
+                    <div class="info-item">
+                        <img src="/assets/icons/trash.svg" alt="" />
+                        <span>Delete all players (double click)</span>
+                    </div>
+                    <div class="info-item">
+                        <img src="/assets/icons/leaderboard.svg" alt="" />
+                        <span>Show current rankings</span>
+                    </div>
+                    <div class="info-item">
+                        <img src="/assets/icons/hexagon-dice.svg" alt="" />
+                        <span>Pick a random player</span>
+                    </div>
+                </div>
+                <button id="help-close">Close</button>
             </div>
         </div>
     </body>

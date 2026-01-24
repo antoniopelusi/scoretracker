@@ -63,10 +63,12 @@ const updateNoname = (i) => {
 
 const updateButtons = () => {
     const named = players.filter((p) => p.name.trim()).length;
+    const hasScores = players.some((p) => p.score !== 0);
     const btns = [
         { el: $("random"), condition: named < 2 },
         { el: $("ranking"), condition: named < 2 },
         { el: $("add"), condition: players.length >= 100 },
+        { el: $("reset-scores"), condition: !hasScores },
         { el: $("reset"), condition: players.length < 1 },
     ];
     btns.forEach(({ el, condition }) => {
@@ -90,6 +92,7 @@ const updateScore = (i) => {
     if (!el) return;
     el.querySelector("[data-score-input]").value = players[i].score;
     updateRanks();
+    updateButtons();
 };
 
 const render = () => {
@@ -112,7 +115,11 @@ const render = () => {
             </div>
             <div class="info-item">
                 <img src="/assets/icons/restart.svg" alt="" />
-                <span>Reset all (double click)</span>
+                <span>Reset score (double click)</span>
+            </div>
+            <div class="info-item">
+                <img src="/assets/icons/trash.svg" alt="" />
+                <span>Delete all players (double click)</span>
             </div>
             <div class="info-item">
                 <img src="/assets/icons/leaderboard.svg" alt="" />
@@ -153,6 +160,16 @@ const del = (i) =>
             render();
         }, 200);
     });
+
+const resetScores = () => {
+    const hasScores = players.some((p) => p.score !== 0);
+    if (!hasScores) return;
+    danger("reset-scores", () => {
+        players.forEach((p) => (p.score = 0));
+        save();
+        players.forEach((_, i) => updateScore(i));
+    });
+};
 
 const reset = () => {
     if (!players.length) return;
@@ -207,6 +224,8 @@ const openRanking = () => {
 };
 
 const closeRanking = () => $("ranking-overlay").classList.remove("show");
+const openHelp = () => $("help-overlay").classList.add("show");
+const closeHelp = () => $("help-overlay").classList.remove("show");
 
 const safeEval = (expr) => {
     const sanitized = expr.replace(/\s+/g, "").replace(/[^0-9+\-*/().]/g, "");
@@ -292,10 +311,12 @@ document.addEventListener("click", (e) => {
     }
     if (target.id === "random") random();
     else if (target.id === "add") add();
+    else if (target.id === "reset-scores") resetScores();
     else if (target.id === "reset") reset();
     else if (target.dataset.action?.startsWith("del"))
         del(+target.dataset.action.replace("del", ""));
     else if (target.id === "ranking") openRanking();
+    else if (target.id === "help") openHelp();
     else if (target.dataset.calc !== undefined) openCalc(+target.dataset.calc);
     else if (target.dataset.score) {
         const i = +target.dataset.index;
@@ -418,6 +439,7 @@ document.addEventListener("input", (e) => {
         e.target.value = numValue;
         save();
         updateRanks();
+        updateButtons();
     }
 });
 
@@ -438,6 +460,7 @@ document.addEventListener(
                 e.target.value = 0;
                 save();
                 updateRanks();
+                updateButtons();
                 return;
             }
 
@@ -451,11 +474,13 @@ document.addEventListener(
                 e.target.value = numValue;
                 save();
                 updateRanks();
+                updateButtons();
             } else {
                 players[i].score = 0;
                 e.target.value = 0;
                 save();
                 updateRanks();
+                updateButtons();
             }
         }
     },
@@ -504,6 +529,7 @@ document.addEventListener("keydown", (e) => {
         if ($("calc-overlay").classList.contains("show")) closeCalc();
         else if ($("ranking-overlay").classList.contains("show"))
             closeRanking();
+        else if ($("help-overlay").classList.contains("show")) closeHelp();
     }
 });
 
@@ -533,6 +559,9 @@ document
 $("calc-confirm").addEventListener("click", confirmCalc);
 $("calc-cancel").addEventListener("click", closeCalc);
 document.querySelector(".calc-backdrop").addEventListener("click", closeCalc);
+
+$("help-close").addEventListener("click", closeHelp);
+document.querySelector(".help-backdrop").addEventListener("click", closeHelp);
 
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () =>
