@@ -55,12 +55,6 @@ const playerHTML = (p, i) => {
     </article>`;
 };
 
-const updateNoname = (i) => {
-    if (!players[i]) return;
-    $("p" + i).classList.toggle("noname", !players[i].name.trim());
-    updateButtons();
-};
-
 const updateButtons = () => {
     const named = players.filter((p) => p.name.trim()).length;
     const hasScores = players.some((p) => p.score !== 0);
@@ -76,6 +70,23 @@ const updateButtons = () => {
         el.disabled = condition;
         el.classList.toggle("disabled", condition);
     });
+
+    const helpBtn = $("help");
+    if (helpBtn) {
+        if (players.length > 0) {
+            helpBtn.style.visibility = "visible";
+            setTimeout(() => (helpBtn.style.opacity = "1"), 10);
+        } else {
+            helpBtn.style.opacity = "0";
+            setTimeout(() => (helpBtn.style.visibility = "hidden"), 200);
+        }
+    }
+};
+
+const updateNoname = (i) => {
+    if (!players[i]) return;
+    $("p" + i).classList.toggle("noname", !players[i].name.trim());
+    updateButtons();
 };
 
 const updateRanks = () => {
