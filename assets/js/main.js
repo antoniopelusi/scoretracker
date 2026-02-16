@@ -575,7 +575,7 @@ $("help-close").addEventListener("click", closeHelp);
 document.querySelector(".help-backdrop").addEventListener("click", closeHelp);
 
 if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () =>
-        navigator.serviceWorker.register("/service-worker.js"),
-    );
+    const basePath = window.location.pathname.replace(/\/[^/]*$/, "/");
+    const swPath = basePath + "service-worker.js";
+    navigator.serviceWorker.register(swPath);
 }
