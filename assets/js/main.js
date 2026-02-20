@@ -46,12 +46,12 @@ const playerHTML = (p, i) => {
         <output class="${getRankClass(rank)}">${rank}</output>
         <input type="text" value="${p.name}" placeholder="Name" enterkeyhint="done" data-index="${i}">
         <span>
-            <button aria-label="Decrement score by one" data-score="-" data-index="${i}"><img src="/assets/icons/minus.svg"></button>
+            <button aria-label="Decrement score by one" data-score="-" data-index="${i}"><img src="./assets/icons/minus.svg"></button>
             <input type="text" inputmode="numeric" value="${p.score}" data-index="${i}" enterkeyhint="done" data-score-input>
-            <button aria-label="Increment score by one" data-score="+" data-index="${i}"><img src="/assets/icons/plus.svg"></button>
+            <button aria-label="Increment score by one" data-score="+" data-index="${i}"><img src="./assets/icons/plus.svg"></button>
         </span>
-        <button aria-label="Calculate score" data-calc="${i}"><img src="/assets/icons/math-book.svg"></button>
-        <button aria-label="Remove player (double click)" data-action="del${i}"><img src="/assets/icons/user-xmark.svg"></button>
+        <button aria-label="Calculate score" data-calc="${i}"><img src="./assets/icons/math-book.svg"></button>
+        <button aria-label="Remove player (double click)" data-action="del${i}"><img src="./assets/icons/user-xmark.svg"></button>
     </article>`;
 };
 
@@ -113,31 +113,31 @@ const render = () => {
         : `<aside class="fadeIn">
             <p>Score Tracker</p>
             <div class="info-item">
-                <img src="/assets/icons/user-plus.svg" alt="" />
+                <img src="./assets/icons/user-plus.svg" alt="" />
                 <span>Add a new player</span>
             </div>
             <div class="info-item">
-                <img src="/assets/icons/math-book.svg" alt="" />
+                <img src="./assets/icons/math-book.svg" alt="" />
                 <span>Update score</span>
             </div>
             <div class="info-item">
-                <img src="/assets/icons/user-xmark.svg" alt="" />
+                <img src="./assets/icons/user-xmark.svg" alt="" />
                 <span>Remove player (double click)</span>
             </div>
             <div class="info-item">
-                <img src="/assets/icons/restart.svg" alt="" />
+                <img src="./assets/icons/restart.svg" alt="" />
                 <span>Reset all scores (double click)</span>
             </div>
             <div class="info-item">
-                <img src="/assets/icons/trash.svg" alt="" />
+                <img src="./assets/icons/trash.svg" alt="" />
                 <span>Delete all players (double click)</span>
             </div>
             <div class="info-item">
-                <img src="/assets/icons/leaderboard.svg" alt="" />
+                <img src="./assets/icons/leaderboard.svg" alt="" />
                 <span>Show current rankings</span>
             </div>
             <div class="info-item">
-                <img src="/assets/icons/hexagon-dice.svg" alt="" />
+                <img src="./assets/icons/hexagon-dice.svg" alt="" />
                 <span>Pick a random player</span>
             </div>
         </aside>`;
