@@ -11,6 +11,16 @@ const save = () =>
         JSON.stringify(players.filter((p) => p.name.trim())),
     );
 
+function debounce(fn, delay) {
+    let timer;
+    return function (...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+    };
+}
+
+const debouncedSave = debounce(save, 300);
+
 const clearPending = () => {
     clearTimeout(timeout);
     document
@@ -424,7 +434,7 @@ document.addEventListener("input", (e) => {
         !e.target.hasAttribute("data-score-input")
     ) {
         players[i].name = e.target.value;
-        save();
+        debouncedSave();
         updateNoname(i);
     } else if (
         e.target.hasAttribute &&
@@ -448,7 +458,7 @@ document.addEventListener("input", (e) => {
 
         players[i].score = numValue;
         e.target.value = numValue;
-        save();
+        debouncedSave();
         updateRanks();
         updateButtons();
     }
